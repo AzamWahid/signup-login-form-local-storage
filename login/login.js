@@ -73,7 +73,8 @@ function login() {
         if (loginUser) {
             if (userLoginPass.value === loginUser.UserPass) {
                 loginSuccessAlert.style.display = 'block';
-                loginSuccessAlert.innerHTML = "Login Successfully"
+                loginSuccessAlert.innerHTML = "Login Successfully";
+               window.location.href = './login.html'
             }
             else {
 
