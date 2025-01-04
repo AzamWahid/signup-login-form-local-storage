@@ -170,6 +170,14 @@ form {
     margin-bottom: 2px !important;
 }
 
+/* #loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+} */
+
 .toggle-panel {
   position: absolute;
   width: 50%;
@@ -274,3 +282,4 @@ form {
     font-size: 30px;
   }
 }
+

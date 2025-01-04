@@ -9,6 +9,11 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
     container.classList.remove('active');
 })
+
+if (JSON.parse(localStorage.getItem('isLoggedIn'))) {
+    window.location.href = '../mainpage/index.html'
+}
+
 //---------------------------SIGN UP-------------------------------------------
 let users = JSON.parse(localStorage.getItem('users')) || [];
 let userDet = {};
@@ -26,26 +31,32 @@ function signup() {
             return user.UserEmail == userEmail.value;
         })
     }
+    if (userName.value !== "" && userEmail.value != "" && userPass.value != "") {
+        if (userAlreadyFound) {
+            signupDangerAlert.style.display = 'block';
+            signupDangerAlert.innerHTML = "User already exists"
+        }
+        else {
+            signupDangerAlert.style.display = 'none';
+            let userDet = {
+                UserName: userName.value,
+                UserEmail: userEmail.value,
+                UserPass: userPass.value
+            }
+            users.push(userDet);
+            localStorage.setItem('users', JSON.stringify(users));
 
-    if (userAlreadyFound) {
-        signupDangerAlert.style.display = 'block';
-        signupDangerAlert.innerHTML = "User already exists"
+            document.querySelector('#userName').value = "";
+            document.querySelector('#userEmail').value = "";
+            document.querySelector('#userPass').value = "";
+            signupSuccessAlert.style.display = 'block';
+            signupSuccessAlert.innerHTML = "User Registration Sucessfully"
+        }
     }
     else {
-        signupDangerAlert.style.display = 'none';
-        let userDet = {
-            UserName: userName.value,
-            UserEmail: userEmail.value,
-            UserPass: userPass.value
-        }
-        users.push(userDet);
-        localStorage.setItem('users', JSON.stringify(users));
-
-        document.querySelector('#userName').value = "";
-        document.querySelector('#userEmail').value = "";
-        document.querySelector('#userPass').value = "";
-        signupSuccessAlert.style.display = 'block';
-        signupSuccessAlert.innerHTML = "User Registration Sucessfully"
+        signupDangerAlert.style.display = 'block';
+        signupDangerAlert.innerHTML = "Please fill all the fields"
+        return;
     }
 }
 
@@ -72,9 +83,22 @@ function login() {
         console.log(loginUser);
         if (loginUser) {
             if (userLoginPass.value === loginUser.UserPass) {
+                loginDangerAlert.style.display = 'none';
                 loginSuccessAlert.style.display = 'block';
                 loginSuccessAlert.innerHTML = "Login Successfully";
-               window.location.href = './login.html'
+                localStorage.setItem('isLoggedIn', JSON.stringify(loginUser))
+
+                // Show loader
+                document.getElementById('loader').classList.remove('d-none');
+
+                // Redirect after a delay
+                setTimeout(() => {
+                    window.location.href = '../mainpage/index.html'; // Example URL
+                }, 1000); // 1 second delay
+
+
+                // window.location.href = '../mainpage/index.html'
+
             }
             else {
 
@@ -84,6 +108,10 @@ function login() {
 
             }
         }
+        else {
+            loginDangerAlert.style.display = 'block';
+            loginDangerAlert.innerHTML = "Invalid Email "
+        }
     }
 
 
@@ -91,3 +119,13 @@ function login() {
 
 
 }
+
+document.getElementById('loginForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevents the form from submitting and refreshing the page
+    login(); // Call your login function here
+});
+
+document.getElementById('signUpForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevents the form from submitting and refreshing the page
+    signup(); // Call your login function here
+});
